@@ -103,26 +103,6 @@ public class HomeActivity extends ActionBarActivity {
                 Bundle bun=new Bundle();
                 bun.putString("fields","likes,message,picture");
                 if(position==1){//fetch
-                    new GraphRequest(
-                            AccessToken.getCurrentAccessToken(),
-                            "/1000407163303601/feed",
-                            bun,
-                            HttpMethod.GET,
-                            new GraphRequest.Callback() {
-                                public void onCompleted(GraphResponse response) {
-            /* handle the result */
-
-                                    try {
-                                        response.getRawResponse();
-                                        postlists.setAdapter(new PostViewAdapter(HomeActivity.this, response.getJSONObject()));
-                                        //Toast.makeText(getApplicationContext(),response.getRawResponse(),Toast.LENGTH_LONG).show();
-
-                                    }catch (Exception e){
-                                        postlists.setAdapter(new PostViewAdapter(HomeActivity.this,response.getJSONObject()));
-                                    }
-                                }
-                            }
-                    ).executeAsync();
 
                     postlists.setVisibility(View.VISIBLE);
 
@@ -171,7 +151,15 @@ public class HomeActivity extends ActionBarActivity {
         public void onReceive(Context context, Intent intent) {
             Log.d("netres","recive "+intent.getStringExtra("resfor"));
             if(intent.getStringExtra("resfor").equals("postids")){
-                Toast.makeText(getApplication(),intent.getStringExtra("result"),Toast.LENGTH_LONG).show();
+                //
+                // Toast.makeText(getApplication(),intent.getStringExtra("result"),Toast.LENGTH_LONG).show();
+                try {
+                    JSONObject res_obj=new JSONObject(intent.getStringExtra("result"));
+                    postlists.setAdapter(new PostViewAdapter(HomeActivity.this, res_obj));
+                    postlists.setVisibility(View.VISIBLE);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
             else if (intent.getStringExtra("resfor").equals("imagesdata")){
