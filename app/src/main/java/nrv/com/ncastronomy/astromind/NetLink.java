@@ -53,7 +53,14 @@ public class NetLink extends Service {
 
                             try {
                                 response.getRawResponse();
-                                Log.d("service",response.getRawResponse());
+                                Intent in=new Intent("Get.Store.Intent");
+                                //in.putExtra("Store_QTY",100.0);
+                                in.putExtra("resfor","postids");
+                                in.putExtra("error","ok");
+                                in.putExtra("result",response.getRawResponse());
+                                sendBroadcast(in);
+
+                                Log.d("service", response.getRawResponse());
                                 //postlists.setAdapter(new PostViewAdapter(HomeActivity.this, response.getJSONObject()));
                                 //Toast.makeText(getApplicationContext(),response.getRawResponse(),Toast.LENGTH_LONG).show();
 

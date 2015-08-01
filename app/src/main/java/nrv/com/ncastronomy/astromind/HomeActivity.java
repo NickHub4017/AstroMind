@@ -2,8 +2,10 @@ package nrv.com.ncastronomy.astromind;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -60,6 +62,11 @@ public class HomeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startService(new Intent(this, NetLink.class));
+        IntentFilter movementFilter;
+        movementFilter = new IntentFilter("Get.Store.Intent");
+        NetResponse netResponse = new NetResponse();
+        registerReceiver(netResponse, movementFilter);
+
         setContentView(R.layout.homepage);
         drawerLayout=(DrawerLayout)findViewById(R.id.drawer);
 //        dataset=getResources().getStringArray(R.array.testar);
@@ -158,7 +165,20 @@ public class HomeActivity extends ActionBarActivity {
         drawerToggle.syncState();
     }
 
+    public class NetResponse extends BroadcastReceiver{
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("netres","recive "+intent.getStringExtra("resfor"));
+            if(intent.getStringExtra("resfor").equals("postids")){
+                Toast.makeText(getApplication(),intent.getStringExtra("result"),Toast.LENGTH_LONG).show();
+
+            }
+            else if (intent.getStringExtra("resfor").equals("imagesdata")){
+
+            }
+        }
+    }
     }
 
 class CustAdapter extends  BaseAdapter{
