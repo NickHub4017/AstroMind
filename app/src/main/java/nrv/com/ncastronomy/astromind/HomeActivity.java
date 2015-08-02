@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -46,6 +47,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 
 
 /**
@@ -92,7 +95,29 @@ public class HomeActivity extends ActionBarActivity {
         drawerLayout.setDrawerListener(drawerToggle);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+postlists.setOnScrollListener(new AbsListView.OnScrollListener() {
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        int curfst=postlists.getFirstVisiblePosition();
+        int lstfst= postlists.getLastVisiblePosition();
+        for (int i=curfst;i<lstfst;i++){
+            SingleRow tmp=(SingleRow)postlists.getAdapter().getItem(i);
 
+            Intent in=new Intent("Req.Store.Intent");
+            in.putExtra("request","getimages");
+            in.putExtra("imglink",tmp.imageid);
+            in.putExtra("id",tmp.id);
+            sendBroadcast(in);
+
+        }
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+});
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -100,12 +125,10 @@ public class HomeActivity extends ActionBarActivity {
                 Toast.makeText(getApplication(),position+" Selected ",Toast.LENGTH_LONG).show();
                 listView.setItemChecked(position, true);
                 drawerLayout.closeDrawers();
-                Bundle bun=new Bundle();
-                bun.putString("fields","likes,message,picture");
                 if(position==1){//fetch
-
-                    postlists.setVisibility(View.VISIBLE);
-
+                    Intent in=new Intent("Req.Store.Intent");
+                    in.putExtra("request", "allpostids");
+                    sendBroadcast(in);
                 }
                 else if(position==2){
                     postlists.setVisibility(View.INVISIBLE);
@@ -113,10 +136,7 @@ public class HomeActivity extends ActionBarActivity {
 
                 }
                 else if(position==3){
-                    Intent in=new Intent("Req.Store.Intent");
-                    //in.putExtra("Store_QTY",100.0);
-                    in.putExtra("Get_Store_Item","11111");
-                    sendBroadcast(in);
+
                 }
 
             }
@@ -153,8 +173,13 @@ public class HomeActivity extends ActionBarActivity {
             if(intent.getStringExtra("resfor").equals("postids")){
                 //
                 // Toast.makeText(getApplication(),intent.getStringExtra("result"),Toast.LENGTH_LONG).show();
+                String result="";
+
+                    result=intent.getStringExtra("result");
+                Log.d("service_transmit", ""+result.length());
+
                 try {
-                    JSONObject res_obj=new JSONObject(intent.getStringExtra("result"));
+                    JSONObject res_obj=new JSONObject(result);
                     postlists.setAdapter(new PostViewAdapter(HomeActivity.this, res_obj));
                     postlists.setVisibility(View.VISIBLE);
                 } catch (JSONException e) {
@@ -228,17 +253,24 @@ String menuItems[];
     }
 }
 class SingleRow{
+    int typeofpost;//0-message 1-story
+    String id;
     String title;
     int likes;
     String description;
-    int imageid;
+    String imageid;
     int postimgid;
+    String pubdate;
 
-    public SingleRow(String title, String description,int img,int iconimg) {
+    public SingleRow(String title, String description,String img,int iconimg,String pid,int type,String dat_pub) {
+
         this.title = title;
         this.description = description;
         this.imageid=img;
         this.postimgid=iconimg;
+        this.id=pid;
+        this.typeofpost=type;
+        this.pubdate=dat_pub;
     }
 }
 
@@ -250,7 +282,7 @@ PostViewAdapter(Context con,JSONObject jsonObject){
     cont=con;
     datalist=new ArrayList<SingleRow>();
     Resources res=con.getResources();
-    int images[]={R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon};
+   // int images[]={R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon};
     int images_icon[]={R.drawable.posticon,R.drawable.posticon,R.drawable.posticon,R.drawable.posticon,R.drawable.posticon,R.drawable.posticon,R.drawable.posticon,R.drawable.posticon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon};
     if(jsonObject!=null){
         try {
@@ -259,15 +291,38 @@ PostViewAdapter(Context con,JSONObject jsonObject){
                 JSONObject post=data.getJSONObject(i);
                 String tit;
                 String desc;
+                String pubdt;
+                int tp;
                 if(post.has("message")){
                     tit="message";
                     desc=post.getString("message");
+                    pubdt=post.getString("created_time");
+                    tp=0;
+                }
+                else if(post.has("story")){//
+                    tit="story";
+                    //Log.d("post no",""+i);
+                    desc=post.getString("story");
+                    tp=1;
+                    pubdt=post.getString("created_time");
+                }
+
+                else{
+                    Log.d("all keys",post.keys().toString());
+
+                    tit="ganna ba";
+                    desc="ganna ba oi  "+ i;
+                    tp=i;
+                    pubdt="danne na";
+                }
+                SingleRow s;
+                if(post.has("picture")){
+                     s=new SingleRow(tit,desc,post.getString("picture"),images_icon[i],post.getString("id"),tp,pubdt);
                 }
                 else{
-                    tit="story";
-                    desc=post.getString("story");
+                     s=new SingleRow(tit,desc,null,images_icon[i],post.getString("id"),tp,pubdt);
                 }
-                SingleRow s=new SingleRow(tit,desc,images[i],images_icon[i]);
+
                 datalist.add(s);
 
             }
@@ -313,10 +368,10 @@ PostViewAdapter(Context con,JSONObject jsonObject){
         TextView post_pubdate= (TextView) row.findViewById(R.id.post_pubdate);
         SingleRow temp=datalist.get(position);
         imgicon.setImageResource(temp.postimgid);
-        imgphoto.setImageResource(temp.imageid);
+        //imgphoto.setImageResource(temp.imageid);
         titletext.setText(temp.description);
         nolikes.setText(temp.title);
-        post_pubdate.setText(temp.title);
+        post_pubdate.setText(temp.pubdate);
         return row;
     }
 
