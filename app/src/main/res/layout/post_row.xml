@@ -10,11 +10,15 @@
         android:maxHeight="1dp"
         android:id="@+id/posticon_image"
         android:src="@drawable/icon"/>
-    <ImageView
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/thumbnail"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/post_image"
-        android:src="@drawable/icon"/>
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="center_horizontal"/>
+
 
     <TextView
         android:layout_width="fill_parent"
@@ -23,17 +27,21 @@
         android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
         android:id="@+id/post_desc_textview" />
 
-    <LinearLayout
+    <TableLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:collapseColumns="0,1"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="100"
-            android:id="@+id/post_no_likes" />
+            android:id="@+id/post_no_likes"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,6 +50,8 @@
             android:text="Medium Text"
             android:id="@+id/post_pubdate"
             android:layout_gravity="right"
+            android:gravity="right"
             />
-    </LinearLayout>
+
+    </TableLayout>
 </LinearLayout>

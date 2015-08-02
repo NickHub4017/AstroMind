@@ -56,7 +56,7 @@ public class NetLink extends Service {
             Log.d("hi", "HiNetBroadcast");
             if (intent.getStringExtra("request").equals("allpostids")) {
                 Bundle bun = new Bundle();
-                bun.putString("fields", "likes,message,picture,story,created_time");
+                bun.putString("fields", "likes,message,picture,story,created_time,link");
                 new GraphRequest(
                         AccessToken.getCurrentAccessToken(),
                         "/1000407163303601/feed",
@@ -92,7 +92,10 @@ public class NetLink extends Service {
 
             }
             else if (intent.getStringExtra("request").equals("getimages")) {
-                                        new FetchImageAsyncTask().execute(intent.getStringExtra("imglink"),intent.getStringExtra("id"));
+                if(intent.getStringExtra("imglink")!=null) {
+                    Log.d("RequestImage", intent.getStringExtra("imglink"));
+                    new FetchImageAsyncTask().execute(intent.getStringExtra("imglink"), intent.getStringExtra("id"));
+                }
             }
         }
     }
