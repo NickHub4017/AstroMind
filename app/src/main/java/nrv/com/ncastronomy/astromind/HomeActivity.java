@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -86,9 +88,22 @@ public class HomeActivity extends ActionBarActivity {
         listView.setAdapter(custAdapter);
 
 
+
         postlists=(ListView)findViewById(R.id.postlistviews);
 //        listView.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,dataset));
+        postlists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SingleRow t = (SingleRow) parent.getAdapter().getItem(position);
+                if(t.link!=null){
+                if (!t.link.split(".com")[0].contains("face")) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(t.link)));
+                } else {
 
+                }
+            }
+            }
+        });
         drawerToggle=new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close){
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -187,95 +202,8 @@ public class HomeActivity extends ActionBarActivity {
     }
     }
 
-class CustAdapter extends  BaseAdapter{
-String menuItems[];
-    int images[]={R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon};
 
-    Context context;
-    public CustAdapter(Context context_inp){
-        context=context_inp;
-        menuItems=context.getResources().getStringArray(R.array.testar);
-    }
-    @Override
-    public int getCount() {
-        return menuItems.length;
-    }
 
-    @Override
-    public Object getItem(int position) {
-        return menuItems[position];
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View row=null;
-        if(position!=0) {
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                row = inflater.inflate(R.layout.custom_row, parent, false);
-            } else {
-                row = convertView;
-            }
-            TextView tv = (TextView) row.findViewById(R.id.textView);
-            ImageView imtv = (ImageView) row.findViewById(R.id.imageView2);
-            tv.setText(menuItems[position]);
-            imtv.setImageResource(images[position]);
-
-            return row;
-        }
-        else{
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                row = inflater.inflate(R.layout.row_first, parent, false);
-            } else {
-                row = convertView;
-            }
-            //TextView tv = (TextView) row.findViewById(R.id.textView);
-            ImageView imtv = (ImageView) row.findViewById(R.id.profilepic);
-            //tv.setText(menuItems[position]);
-            imtv.setImageResource(images[position]);
-            imtv.setMaxWidth(200);
-
-            return row;
-        }
-    }
-}
-class SingleRow{
-    int typeofpost;//0-message 1-story
-    String id;
-    String title;
-    int likes;
-    String description;
-    String imageid;
-    int postimgid;
-    String pubdate;
-    String link;
-    public SingleRow(String title, String description,String img,int iconimg,String pid,int type,String dat_pub,int lks,String lnk) {
-
-        this.title = title;
-        this.description = description;
-        this.imageid=img;
-        this.postimgid=iconimg;
-        this.id=pid;
-        this.typeofpost=type;
-        this.pubdate=dat_pub.split("T")[0];
-        this.likes=lks;
-        this.link=lnk;
-    }
-    public String getLike(){
-        if (this.likes!=0) {
-            return "Likes:-" + this.likes;
-        }
-        else {
-            return "Do the first like";
-        }
-    }
-}
 
 
 

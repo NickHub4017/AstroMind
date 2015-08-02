@@ -14,7 +14,7 @@ public class DBAstroMind extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String create_temptable="CREATE TABLE imagedata";
+        String create_temptable="CREATE TABLE imagedata (fbid varchar(255),link text)";
         db.execSQL(create_temptable);
     }
 

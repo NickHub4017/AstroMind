@@ -140,13 +140,13 @@ public class CustomListAdapter extends BaseAdapter {
         SingleRow m = datalist.get(position);
 
         // thumbnail image
-        thumbNail.setImageUrl(m.imageid, imageLoader);
+        thumbNail.setImageUrl(m.imagelink, imageLoader);
 
         // title
        // title.setText(m.title);
 
         // rating
-        likes.setText(String.valueOf(m.likes));
+        likes.setText(String.valueOf(m.getLike()));
 
         // genre
 

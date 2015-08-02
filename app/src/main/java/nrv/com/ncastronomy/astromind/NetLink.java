@@ -48,7 +48,6 @@ public class NetLink extends Service {
         return START_STICKY;
     }
 
-
     class getPostData extends BroadcastReceiver {
 
         @Override
@@ -67,7 +66,7 @@ public class NetLink extends Service {
             /* handle the result */
 
                                 try {
-                                    response.getRawResponse();
+
                                     Intent in = new Intent("Get.Store.Intent");
                                     //in.putExtra("Store_QTY",100.0);
                                     in.putExtra("resfor", "postids");
@@ -104,21 +103,6 @@ public class NetLink extends Service {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
-            /*ImageView p=(ImageView)getView().findViewById(R.id.img_place);
-            p.setMaxWidth(l.getWidth());
-            File dir=new File("sdcard/Jrider/");
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-            File img=new File("sdcard/Jrider/" + x.getPlaceName() + ".jpg");
-            if(img.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile("sdcard/Jrider/" + x.getPlaceName() + ".jpg");
-                p.setImageBitmap(bitmap);
-            }else{
-                Toast.makeText(getActivity().getApplicationContext(), "Sorry No Image available", Toast.LENGTH_LONG).show();
-                p.setImageResource(R.drawable.noimage);
-            }//p.setIma*/
         }
 
         @Override
