@@ -6,11 +6,12 @@
     <string name="drawer_open">Open Navigation drawer</string>
     <string name="drawer_close">Close Navigation drawer</string>
     <string-array name="testar" >
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
+        <item>Profile</item>
+        <item>Posts</item>
+        <item>Events</item>
+        <item>Option1</item>
+        <item>Logout</item>
+        <item>Help</item>
     </string-array>
 
     <string-array name="test2" >

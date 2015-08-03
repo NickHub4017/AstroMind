@@ -13,7 +13,7 @@ import android.widget.TextView;
  */
 class CustAdapter extends BaseAdapter {
     String menuItems[];
-    int images[]={R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon,R.drawable.icon};
+    int images[]={R.drawable.prof,R.drawable.posts,R.drawable.events,R.drawable.compass,R.drawable.bookmark,R.drawable.logout};
 
     Context context;
     public CustAdapter(Context context_inp){
