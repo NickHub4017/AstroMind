@@ -2,6 +2,7 @@ package nrv.com.ncastronomy.astromind;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -97,7 +99,7 @@ public class MainActivityFragment extends Fragment {
          View view=inflater.inflate(R.layout.fragment_main, container, false);
         textView = (TextView) view.findViewById(R.id.dataview);
         btn=(Button)view.findViewById(R.id.button);
-
+        view.setBackgroundColor(Color.TRANSPARENT);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//manage_pages
@@ -151,7 +153,7 @@ public class MainActivityFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LoginButton loginButton=(LoginButton)view.findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_posts");//manage_pages,"user_friends"
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "user_posts"));//manage_pages,"user_friends"
         loginButton.setFragment(this);
         loginButton.registerCallback(callbackManager, callback);
 

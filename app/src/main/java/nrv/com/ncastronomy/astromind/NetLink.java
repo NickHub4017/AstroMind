@@ -19,6 +19,7 @@ import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,7 +44,7 @@ public class NetLink extends Service {
         movementFilter = new IntentFilter("Req.Store.Intent");
         getPostData getpostdata = new getPostData();
         registerReceiver(getpostdata, movementFilter);
-        Log.d("hi","HiNet");
+        Log.d("hi", "HiNet");
 
         return START_STICKY;
     }
@@ -55,7 +56,8 @@ public class NetLink extends Service {
             Log.d("hi", "HiNetBroadcast");
             if (intent.getStringExtra("request").equals("allpostids")) {
                 Bundle bun = new Bundle();
-                bun.putString("fields", "likes,message,picture,story,created_time,link");
+                bun.putString("fields", "id,likes,message,picture,story,created_time,link");
+                bun.putString("limit", "1");
                 new GraphRequest(
                         AccessToken.getCurrentAccessToken(),
                         "/1000407163303601/feed",
@@ -66,6 +68,8 @@ public class NetLink extends Service {
             /* handle the result */
 
                                 try {
+
+
 
                                     Intent in = new Intent("Get.Store.Intent");
                                     //in.putExtra("Store_QTY",100.0);
@@ -90,11 +94,40 @@ public class NetLink extends Service {
 
 
             }
-            else if (intent.getStringExtra("request").equals("getimages")) {
-                if(intent.getStringExtra("imglink")!=null) {
-                    Log.d("RequestImage", intent.getStringExtra("imglink"));
-                    new FetchImageAsyncTask().execute(intent.getStringExtra("imglink"), intent.getStringExtra("id"));
-                }
+            else if (intent.getStringExtra("request").equals("allevents")) {
+                Bundle bun = new Bundle();
+                bun.putString("fields", "description,place,cover,name,start_time,end_time");
+                new GraphRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        "/17819162855/events",
+                        bun,
+                        HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            public void onCompleted(GraphResponse response) {
+            /* handle the result */
+
+                                try {
+
+                                    Intent in = new Intent("Get.Store.Intent");
+                                    //in.putExtra("Store_QTY",100.0);
+                                    in.putExtra("resfor", "events");
+                                    in.putExtra("error", "ok");
+                                    String tm=response.getRawResponse();
+                                    // Log.d("story count",tm.indexOf("story")+"");
+
+                                    in.putExtra("result",tm);
+                                    sendBroadcast(in);
+
+                                    Log.d("service", ""+response.getRawResponse().length());
+                                    //postlists.setAdapter(new PostViewAdapter(HomeActivity.this, response.getJSONObject()));
+                                    //Toast.makeText(getApplicationContext(),response.getRawResponse(),Toast.LENGTH_LONG).show();
+
+                                } catch (Exception e) {
+                                    //postlists.setAdapter(new PostViewAdapter(HomeActivity.this,response.getJSONObject()));
+                                }
+                            }
+                        }
+                ).executeAsync();
             }
         }
     }

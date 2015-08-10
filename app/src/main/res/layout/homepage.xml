@@ -13,6 +13,14 @@
           android:layout_width="fill_parent"
           android:layout_height="fill_parent"
           android:id="@+id/postlistviews"></ListView>
+
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/eventlistviews"
+            android:visibility="invisible"></ListView>
+
+
     </FrameLayout>
     <ListView
         android:id="@+id/drawList"

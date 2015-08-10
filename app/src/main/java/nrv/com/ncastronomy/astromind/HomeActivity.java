@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,7 +29,9 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,17 +71,45 @@ public class HomeActivity extends ActionBarActivity {
     private String[] dataset;
     private ActionBarDrawerToggle drawerToggle;
     private CustAdapter custAdapter;
-    private  ListView postlists;
+    private  ListView postlists,EventList;
+    NetResponse netResponse;
+    TextView tst;
+    Button b;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(netResponse);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        IntentFilter movementFilter;
+        movementFilter = new IntentFilter("Get.Store.Intent");
+        netResponse = new NetResponse();
+        registerReceiver(netResponse, movementFilter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(netResponse);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startService(new Intent(this, NetLink.class));
         IntentFilter movementFilter;
         movementFilter = new IntentFilter("Get.Store.Intent");
-        NetResponse netResponse = new NetResponse();
+        netResponse = new NetResponse();
         registerReceiver(netResponse, movementFilter);
 
         setContentView(R.layout.homepage);
+
+
 
 
         drawerLayout=(DrawerLayout)findViewById(R.id.drawer);
@@ -87,23 +118,38 @@ public class HomeActivity extends ActionBarActivity {
         listView=(ListView)findViewById(R.id.drawList);
         listView.setAdapter(custAdapter);
 
+        EventList=(ListView)findViewById(R.id.eventlistviews);
+        EventList.setAdapter(custAdapter);
 
 
         postlists=(ListView)findViewById(R.id.postlistviews);
 //        listView.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,dataset));
+        postlists.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                SingleRow t = (SingleRow) parent.getAdapter().getItem(position);
+                if (t.link != null) {
+                    if (!t.link.split(".com")[0].contains("face")) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(t.link)));
+                    } else {
+
+                    }
+                }
+                return true;
+            }
+        });
+
         postlists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SingleRow t = (SingleRow) parent.getAdapter().getItem(position);
-                if(t.link!=null){
-                if (!t.link.split(".com")[0].contains("face")) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(t.link)));
-                } else {
+                TextView desctv=(TextView)view.findViewById(R.id.post_desc_textview);
 
-                }
-            }
+
             }
         });
+
+
         drawerToggle=new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close){
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -125,20 +171,22 @@ public class HomeActivity extends ActionBarActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplication(),position+" Selected ",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), position + " Selected ", Toast.LENGTH_LONG).show();
                 listView.setItemChecked(position, true);
                 drawerLayout.closeDrawers();
-                if(position==1){//fetch
-                    Intent in=new Intent("Req.Store.Intent");
+                if (position == 1) {//fetch
+                    EventList.setVisibility(View.INVISIBLE);
+                    Intent in = new Intent("Req.Store.Intent");
                     in.putExtra("request", "allpostids");
                     sendBroadcast(in);
-                }
-                else if(position==2){
+                } else if (position == 2) {
                     postlists.setVisibility(View.INVISIBLE);
-                    // listView.setAdapter(null);
+                    Intent in = new Intent("Req.Store.Intent");
+                    in.putExtra("request", "allevents");
+                    sendBroadcast(in);
 
-                }
-                else if(position==3){
+
+                } else if (position == 3) {
 
                 }
 
@@ -195,7 +243,17 @@ public class HomeActivity extends ActionBarActivity {
                 }
 
             }
-            else if (intent.getStringExtra("resfor").equals("imagesdata")){
+            else if (intent.getStringExtra("resfor").equals("events")){
+
+                EventList.setVisibility(View.VISIBLE);
+                String result=intent.getStringExtra("result");
+                try {
+                    JSONObject res_obj=new JSONObject(result);
+                    EventAdapter evad=new EventAdapter(res_obj.getJSONArray("data"),HomeActivity.this);
+                    EventList.setAdapter(evad);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         }

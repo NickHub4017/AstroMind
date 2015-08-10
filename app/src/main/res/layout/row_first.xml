@@ -3,12 +3,17 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/thumbnailprof"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/profilepic"
+            android:minHeight="50px"
+        android:maxHeight="10px"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/mainimage"
 
-        android:layout_gravity="center"/>
+        />
 
     <TextView
         android:layout_width="wrap_content"
